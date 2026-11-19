@@ -11,12 +11,19 @@ public class DBConnection {
 
     private static final String USER = "root";
 
-    // Replace with your actual MySQL root password
-    private static final String PASSWORD = "aasid";
+    // Password is stored in a Windows environment variable
+    private static final String PASSWORD =
+            System.getenv("QUIZ_DB_PASSWORD");
 
     public static Connection getConnection() {
 
         try {
+            if (PASSWORD == null || PASSWORD.isBlank()) {
+                throw new SQLException(
+                        "QUIZ_DB_PASSWORD environment variable is not set."
+                );
+            }
+
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             Connection connection = DriverManager.getConnection(
